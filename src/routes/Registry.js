@@ -9,13 +9,13 @@ function Registry() {
     const addItem = (e) => {
         e.preventDefault();
 
+        if (error) return;
+
         const tempData = [...registryData]; // prepend previous data - spread operator
         tempData.push(textInput);
         setRegistryData(tempData);
         setTextInput("");
     }
-
-    console.log(registryData);
 
     // subscribe on each change to input text
     // if length > 13 chars, fire error
@@ -24,6 +24,19 @@ function Registry() {
         else                       setError(false);
     }, [textInput]);
 
+    const removeItem = (index) => {
+        let newData = [...registryData];
+        newData.splice(index, 1);
+        setRegistryData(newData);
+    }
+
+    const editItem = (index) => {
+        if (error) return;
+
+        let newData = [...registryData];
+        newData[index] = textInput;
+        setRegistryData(newData);
+    }
 
     return (
         <div>
@@ -39,6 +52,17 @@ function Registry() {
                 <input type="submit" value="Submit"/>
             </form>
             {error ? <span style={{color: "red"}}>Error occured.</span> : null}
+            {
+                registryData.map((item, index) => {
+                    return (
+                        <li key={index}>
+                            {index + 1}. {item}
+                            <button onClick={() => removeItem(index)}>Remove</button>
+                            <button onClick={() => editItem(index)}>Update</button>
+                        </li>
+                    )
+                })
+            }
         </div>
     )
 }
